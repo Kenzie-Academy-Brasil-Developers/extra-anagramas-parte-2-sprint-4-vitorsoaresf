@@ -1,58 +1,47 @@
 const bt = document.getElementById('bt');
+const result = document.getElementById('result');
+
 
 function alphabetize(a) {
 	return a.toLowerCase().split("").sort().join("").trim();
 }
 
-bt.addEventListener('click', () => {
-	console.log('Rodando Resultados');
+const getSetsOfFiveAnagrams = (palavras) => {
 	let setElements = new Set(palavras);
 	let setIter = setElements.values();
-	let objSet = new Set();
-	// objSet.add({'abi':'us'})
-	let setIterObjSet = objSet.values();
 
+	let anagramSets = {};
 
-	for (let i = 0; i < 40; i++) {
+	for (let i = 0; i < setElements.size; i++) {
 
-		// PEGANDO O PRIMEIRO E OS PROXIMOS
+		// ELEMENTO ATUAL
 		let auxElement = setIter.next().value;
-
-		// ORDENANDO ESSE ELEMENTO
 		let element = alphabetize(auxElement);
 
-		
-		let obj = new Object();
-		obj[`${element}`] = [auxElement];
 
-		if (objSet.size === 0) {
-			objSet.add(obj);
+		if (anagramSets.hasOwnProperty(`${element}`)) {
+			anagramSets[`${element}`].push(auxElement);
 		} else {
-			let setIterObj = objSet.values();
-			let notAdd = true;
-			for (let z = 0; z < objSet.size; z++) {
-				let aux = setIterObj.next().value;
-				if (aux.hasOwnProperty([`${element}`])) {
-					aux[`${element}`].push(auxElement);
-					notAdd = false;
-				}
-			}
-			if(notAdd === true){
-				objSet.add(obj);
-			}
+			anagramSets[`${element}`] = [auxElement];
 		}
 	}
-	console.log(objSet)
-	// for (let i = 0; i < 2; i++) {
-	// 	let auxElement = setIter.next().value;
-	// 	let element = alphabetize(auxElement);
+	let arr = [];
+	for (let prop in anagramSets) {
+		if(anagramSets[prop].length >= 5){
+			arr.push(anagramSets[prop]);
+		}
+	  }
+	return arr;
+}
 
-	// 	console.log(setIterObjSet.hasOwnProperty('abi'))
+bt.addEventListener('click', () => {
+	console.log('Rodando Resultados');
+	let arrResult = getSetsOfFiveAnagrams(palavras);
 
-	// 	// if(objSet.hasOwnProperty(`${element}`)){
-	// 	// 	console.log('ja tem po')
-	// 	// }else{
-	// 	// 	objSet.add({ [`${element}`]: [auxElement] });
-	// 	// }
-	// }
+	arrResult.forEach(element => {
+		const p = document.createElement('p');
+		p.innerText = JSON.stringify(element);
+		result.appendChild(p);
+	});
+	
 });
